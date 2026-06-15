@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import FooterYearLinks from "@/components/FooterYearLinks";
 import { yearWindow } from "@/lib/holidays";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://festivoscolombia.link";
@@ -38,13 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <footer className="site-footer">
           <div className="inner">
             <h4>Festivos por año</h4>
-            <nav className="year-links">
-              {years.map((y) => (
-                <a key={y} href={`/festivos/${y}`}>
-                  {y}
-                </a>
-              ))}
-            </nav>
+            <FooterYearLinks years={years} />
             <p>
               Fechas calculadas con la Ley 51 de 1983 (Ley Emiliani) y la Ley 2578 de 2026
               (Día de la Virgen del Rosario de Chiquinquirá). Los festivos de Semana Santa se

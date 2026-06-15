@@ -186,6 +186,8 @@ html.modal-open,html.modal-open body{overflow:hidden;overscroll-behavior:none;}
 .date-popover-arrow[data-placement="below"]{top:-6px;}
 
 @media(max-width:899px){
+  .overlay{scroll-padding-top:140px;}
+  .month{scroll-margin-top:140px;}
   .hero-section{min-height:auto;padding:32px 22px 40px;align-items:stretch;}
   .daywrap{min-height:clamp(5rem,22vw,9rem);}
   .upcoming{margin-top:28px;}

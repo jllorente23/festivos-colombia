@@ -94,6 +94,8 @@ export default function CalendarModal({
 }: { initialYear: number; open: boolean; onClose: () => void }) {
   const [viewYear, setViewYear] = useState(initialYear);
   const [tip, setTip] = useState<TipData | null>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const openedOnceRef = useRef(false);
 
   useEffect(() => { if (open) setViewYear(initialYear); }, [open, initialYear]);
   useEffect(() => { if (!open) setTip(null); }, [open]);
@@ -156,6 +158,45 @@ export default function CalendarModal({
 
   const today = useMemo(() => todayInBogota(), []);
 
+  useLayoutEffect(() => {
+    if (!open) {
+      openedOnceRef.current = false;
+      return;
+    }
+    const overlay = overlayRef.current;
+    if (!overlay || window.matchMedia("(min-width: 900px)").matches) return;
+
+    const targetMonth = viewYear === today.getFullYear() ? today.getMonth() : 0;
+    const monthEl = overlay.querySelector<HTMLElement>(`#month-${viewYear}-${targetMonth}`);
+    if (!monthEl) return;
+
+    const scrollToMonth = () => {
+      const head = overlay.querySelector(".ov-head");
+      const legend = overlay.querySelector(".ov-legend");
+      const offset =
+        (head?.getBoundingClientRect().height ?? 0) +
+        (legend?.getBoundingClientRect().height ?? 0) +
+        16;
+      const top =
+        monthEl.getBoundingClientRect().top -
+        overlay.getBoundingClientRect().top +
+        overlay.scrollTop -
+        offset;
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      overlay.scrollTo({
+        top: Math.max(0, top),
+        behavior: reduceMotion ? "auto" : "smooth",
+      });
+    };
+
+    const delay = openedOnceRef.current ? 80 : 220;
+    openedOnceRef.current = true;
+    const id = window.setTimeout(() => {
+      requestAnimationFrame(scrollToMonth);
+    }, delay);
+    return () => window.clearTimeout(id);
+  }, [open, viewYear, today]);
+
   const openTip = (cellId: string, el: HTMLElement, title: string, body: string, meta: string) => {
     if (tip?.cellId === cellId) {
       setTip(null);
@@ -176,7 +217,7 @@ export default function CalendarModal({
   if (!open) return null;
 
   return createPortal(
-    <div className="overlay" role="dialog" aria-modal="true" aria-label={`Calendario ${viewYear}`}>
+    <div className="overlay" ref={overlayRef} role="dialog" aria-modal="true" aria-label={`Calendario ${viewYear}`}>
       <div className="ov-head">
         <div className="year-stepper">
           <button onClick={() => { setViewYear((y) => y - 1); setTip(null); }} aria-label="Año anterior">&larr;</button>
@@ -272,7 +313,7 @@ export default function CalendarModal({
             );
           }
           return (
-            <div key={mo} className="month">
+            <div key={mo} className="month" id={`month-${viewYear}-${mo}`}>
               <h4>{monthName}</h4>
               <div className="dow">{DOW_SHORT.map((s) => <span key={s}>{s}</span>)}</div>
               <div className="days">{cells}</div>

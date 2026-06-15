@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { yearWindow } from "@/lib/holidays";
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://festivoscolombia.co";
+const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://festivoscolombia.link";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
@@ -49,6 +49,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               Fechas calculadas con la Ley 51 de 1983 (Ley Emiliani) y la Ley 2578 de 2026
               (Día de la Virgen del Rosario de Chiquinquirá). Los festivos de Semana Santa se
               calculan a partir de la fecha de Pascua.
+            </p>
+            <p className="footer-credit">
+              Created by{" "}
+              <a href="https://www.javierllorente.dev" target="_blank" rel="noopener noreferrer">
+                www.javierllorente.dev
+              </a>
             </p>
           </div>
         </footer>

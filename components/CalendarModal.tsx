@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   getHolidays, getSpecials, getBands, inBand, dateKey, isSameDay,
   todayInBogota, DOW, DOW_SHORT, MONTHS,
@@ -18,7 +19,17 @@ export default function CalendarModal({
 
   useEffect(() => {
     if (!open) return;
-    document.body.style.overflow = "hidden";
+    const scrollY = window.scrollY;
+    const { documentElement: html, body } = document;
+
+    html.classList.add("modal-open");
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.left = "0";
+    body.style.right = "0";
+    body.style.width = "100%";
+    body.style.overflow = "hidden";
+
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
       else if (e.key === "ArrowLeft") { setViewYear((y) => y - 1); setTip(null); }
@@ -26,7 +37,14 @@ export default function CalendarModal({
     };
     window.addEventListener("keydown", onKey);
     return () => {
-      document.body.style.overflow = "";
+      html.classList.remove("modal-open");
+      body.style.position = "";
+      body.style.top = "";
+      body.style.left = "";
+      body.style.right = "";
+      body.style.width = "";
+      body.style.overflow = "";
+      window.scrollTo(0, scrollY);
       window.removeEventListener("keydown", onKey);
     };
   }, [open, onClose]);
@@ -43,14 +61,14 @@ export default function CalendarModal({
 
   const today = useMemo(() => todayInBogota(), []);
 
-  if (!open) return null;
-
   const showTip = (el: HTMLElement, title: string, body: string, meta: string) => {
     const r = el.getBoundingClientRect();
     setTip({ x: r.left + r.width / 2, y: r.top, title, body, meta });
   };
 
-  return (
+  if (!open) return null;
+
+  return createPortal(
     <div className="overlay" role="dialog" aria-modal="true" aria-label={`Calendario ${viewYear}`}>
       <div className="ov-head">
         <div className="year-stepper">
@@ -136,6 +154,7 @@ export default function CalendarModal({
           <em>{tip.meta}</em>
         </div>
       )}
-    </div>
+    </div>,
+    document.body,
   );
 }

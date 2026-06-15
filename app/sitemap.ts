@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { yearWindow } from "@/lib/holidays";
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://festivoscolombia.co";
+const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://festivoscolombia.link";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();

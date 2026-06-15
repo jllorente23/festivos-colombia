@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
 :root{
   --paper:#FBFBF9;
@@ -10,9 +10,9 @@
   --gold-soft:#FBF3DA;
   --line:#E7E5DD;
   --card:#FFFFFF;
-  --display:"Bricolage Grotesque", system-ui, sans-serif;
-  --body:"Inter", system-ui, sans-serif;
-  --mono:"JetBrains Mono", ui-monospace, monospace;
+  --display:"Space Grotesk", system-ui, sans-serif;
+  --body:"DM Sans", system-ui, sans-serif;
+  --mono:"DM Sans", system-ui, sans-serif;
 }
 
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -35,7 +35,7 @@ a{color:inherit;}
 .is-festivo .eyebrow .dot{background:var(--red);}
 
 .daywrap{line-height:.8;margin:12px 0 2px;min-height:clamp(7rem,30vw,18rem);display:flex;align-items:center;justify-content:center;}
-.day-number{font-family:var(--display);font-weight:800;font-size:clamp(8rem,32vw,20rem);letter-spacing:-.045em;color:var(--ink);transition:color .5s cubic-bezier(.2,.7,.2,1);display:block;}
+.day-number{font-family:var(--display);font-weight:700;font-size:clamp(8rem,32vw,20rem);letter-spacing:-.045em;color:var(--ink);transition:color .5s cubic-bezier(.2,.7,.2,1);display:block;}
 .is-festivo .day-number{color:var(--red);}
 
 .month-line{font-family:var(--display);font-weight:500;font-size:clamp(1.4rem,5vw,2.4rem);letter-spacing:-.02em;margin-top:6px;}
@@ -76,10 +76,10 @@ a{color:inherit;}
 /* Cuerpo SEO y paginas de año */
 .page,.seo-body{max-width:760px;margin:0 auto;padding:34px 22px 70px;}
 .seo-body{border-top:1px solid var(--line);}
-.eyebrow-link{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:10px;}
-.eyebrow-link a{text-decoration:none;}
-.eyebrow-link a:hover{color:var(--ink);}
-h1.title{font-family:var(--display);font-weight:800;font-size:clamp(2rem,7vw,3rem);letter-spacing:-.03em;line-height:1.04;}
+.eyebrow-link{margin-bottom:16px;}
+.back-today{display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;text-decoration:none;color:var(--ink);border:1px solid var(--line);background:var(--card);border-radius:12px;padding:10px 16px;transition:transform .2s ease,border-color .2s ease,background .2s ease;}
+.back-today:hover{transform:translateY(-1px);border-color:#D8D6CC;background:#00000004;}
+h1.title{font-family:var(--display);font-weight:700;font-size:clamp(2rem,7vw,3rem);letter-spacing:-.03em;line-height:1.04;}
 .lead{font-size:16px;color:var(--ink-soft);line-height:1.6;margin-top:14px;max-width:60ch;}
 .lead b{color:var(--ink);font-weight:600;}
 
@@ -111,9 +111,13 @@ h1.title{font-family:var(--display);font-weight:800;font-size:clamp(2rem,7vw,3re
 .year-links a{font-family:var(--mono);font-size:13px;border:1px solid var(--line);border-radius:9px;padding:6px 11px;text-decoration:none;color:var(--ink);transition:background .2s ease;}
 .year-links a:hover{background:#00000008;}
 .site-footer p{font-size:12.5px;color:var(--ink-soft);line-height:1.6;}
+.footer-credit{margin-top:20px;}
+.footer-credit a{color:var(--ink);text-decoration:underline;text-underline-offset:2px;}
+
+html.modal-open,html.modal-open body{overflow:hidden;overscroll-behavior:none;}
 
 /* Overlay calendario */
-.overlay{position:fixed;inset:0;z-index:50;background:var(--paper);overflow-y:auto;}
+.overlay{position:fixed;inset:0;z-index:9999;background:var(--paper);overflow-y:auto;overscroll-behavior:none;-webkit-overflow-scrolling:touch;min-height:100dvh;isolation:isolate;}
 .ov-head{position:sticky;top:0;z-index:2;background:var(--paper);display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--line);gap:16px;}
 .year-stepper{display:flex;align-items:center;gap:8px;}
 .year-stepper button{font-family:var(--body);font-size:20px;line-height:1;color:var(--ink);background:none;border:1px solid var(--line);cursor:pointer;width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;transition:background .2s ease,transform .15s ease;}
@@ -154,13 +158,11 @@ h1.title{font-family:var(--display);font-weight:800;font-size:clamp(2rem,7vw,3re
 
 @media(min-width:900px){
   .hero-section{padding:40px 32px;}
-  .hero{max-width:1100px;display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,360px);gap:48px 56px;align-items:center;text-align:left;}
-  .hero-date{align-items:flex-start;}
-  .eyebrow{justify-content:flex-start;}
-  .daywrap{min-height:clamp(5rem,18vw,12rem);justify-content:flex-start;}
+  .hero{max-width:1100px;display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,360px);gap:48px 56px;align-items:center;}
+  .hero-date{align-items:center;text-align:center;}
+  .daywrap{min-height:clamp(5rem,18vw,12rem);}
   .day-number{font-size:clamp(6rem,14vw,11rem);}
-  .status{margin:26px 0 0;max-width:none;}
-  .legend{justify-content:flex-start;}
+  .status{margin:26px auto 0;}
   .cta{margin-top:26px;}
   .upcoming{margin:0;max-width:none;align-self:center;}
   .months{grid-template-columns:repeat(3,1fr);gap:34px 30px;}

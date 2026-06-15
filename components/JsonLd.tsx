@@ -1,6 +1,6 @@
 import { getHolidays, isoDate } from "@/lib/holidays";
 
-const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://festivoscolombia.co";
+const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://festivoscolombia.link";
 
 export default function JsonLd({ year }: { year: number }) {
   const hs = getHolidays(year);

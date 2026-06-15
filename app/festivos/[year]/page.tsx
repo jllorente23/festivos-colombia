@@ -37,7 +37,9 @@ export default function YearPage({ params }: { params: { year: string } }) {
 
   return (
     <main className="page">
-      <p className="eyebrow-link"><a href="/">Festivos Colombia</a></p>
+      <p className="eyebrow-link">
+        <a href="/" className="back-today">← Llévame al día de hoy</a>
+      </p>
       <h1 className="title">Festivos en Colombia {y}</h1>
       <p className="lead">
         En {y}, Colombia tiene <b>{hs.length} días festivos</b> de carácter nacional. El primero

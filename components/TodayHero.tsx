@@ -2,13 +2,30 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
-  getHolidays, getSpecials, dateKey, todayInBogota, DOW, MONTHS,
+  getHolidays, getSpecials, dateKey, todayInBogota, holidayStartBogotaMs, DOW, MONTHS,
 } from "@/lib/holidays";
 import CalendarModal from "./CalendarModal";
+
+type Countdown = { days: number; hours: number; minutes: number; seconds: number };
+
+function splitCountdown(ms: number): Countdown {
+  const total = Math.max(0, ms);
+  return {
+    days: Math.floor(total / 86_400_000),
+    hours: Math.floor((total % 86_400_000) / 3_600_000),
+    minutes: Math.floor((total % 3_600_000) / 60_000),
+    seconds: Math.floor((total % 60_000) / 1_000),
+  };
+}
+
+function pad2(n: number): string {
+  return String(n).padStart(2, "0");
+}
 
 export default function TodayHero() {
   const [today, setToday] = useState<Date | null>(null);
   const [calOpen, setCalOpen] = useState(false);
+  const [countdown, setCountdown] = useState<Countdown | null>(null);
 
   useEffect(() => { setToday(todayInBogota()); }, []);
 
@@ -34,6 +51,15 @@ export default function TodayHero() {
 
     return { year, todayHol, todayEsp, upcoming, next };
   }, [today]);
+
+  useEffect(() => {
+    if (!data?.next) return;
+    const target = holidayStartBogotaMs(data.next.date);
+    const tick = () => setCountdown(splitCountdown(target - Date.now()));
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, [data?.next]);
 
   const calYear = today ? today.getFullYear() : new Date().getFullYear();
   const isFestivo = !!data?.todayHol;
@@ -101,6 +127,32 @@ export default function TodayHero() {
 
         {data && (
           <div className="upcoming">
+            {countdown && (
+              <div className="countdown">
+                <p className="countdown-label">Tiempo para el siguiente festivo</p>
+                <div className="countdown-units" aria-live="polite">
+                  <div className="countdown-unit">
+                    <span>{countdown.days}</span>
+                    <small>días</small>
+                  </div>
+                  <span className="countdown-sep" aria-hidden="true">:</span>
+                  <div className="countdown-unit">
+                    <span>{pad2(countdown.hours)}</span>
+                    <small>horas</small>
+                  </div>
+                  <span className="countdown-sep" aria-hidden="true">:</span>
+                  <div className="countdown-unit">
+                    <span>{pad2(countdown.minutes)}</span>
+                    <small>min</small>
+                  </div>
+                  <span className="countdown-sep" aria-hidden="true">:</span>
+                  <div className="countdown-unit">
+                    <span>{pad2(countdown.seconds)}</span>
+                    <small>seg</small>
+                  </div>
+                </div>
+              </div>
+            )}
             <h3>Próximos festivos</h3>
             <div>
               {data.upcoming.map((h, i) => (

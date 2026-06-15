@@ -140,6 +140,11 @@ export function todayInBogota(): Date {
   return new Date(Number(parts.year), Number(parts.month) - 1, Number(parts.day));
 }
 
+// Medianoche del festivo en Colombia (UTC-5, sin horario de verano)
+export function holidayStartBogotaMs(d: Date): number {
+  return Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), 5, 0, 0, 0);
+}
+
 export function currentYear(): number {
   return todayInBogota().getFullYear();
 }

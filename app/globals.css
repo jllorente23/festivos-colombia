@@ -65,6 +65,14 @@ a{color:inherit;}
 
 /* Proximos festivos en formato de tabla */
 .upcoming{margin:40px auto 0;width:100%;max-width:440px;text-align:left;flex-shrink:0;}
+.countdown{margin-bottom:22px;padding-bottom:20px;border-bottom:1px solid var(--line);}
+.countdown-label{font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:12px;}
+.countdown-units{display:flex;align-items:flex-end;gap:6px;}
+.countdown-unit{display:flex;flex-direction:column;align-items:center;min-width:44px;}
+.countdown-unit span{font-family:var(--display);font-weight:700;font-size:1.65rem;letter-spacing:-.03em;line-height:1;color:var(--ink);}
+.countdown-unit small{font-family:var(--mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-top:5px;}
+.countdown-sep{font-family:var(--display);font-weight:700;font-size:1.35rem;color:var(--ink-soft);line-height:1;padding-bottom:18px;}
+.is-festivo .countdown-unit span{color:var(--red);}
 .upcoming h3{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:6px;}
 .uprow{display:flex;align-items:baseline;gap:16px;padding:11px 2px;border-bottom:1px solid var(--line);}
 .uprow:last-child{border-bottom:none;}

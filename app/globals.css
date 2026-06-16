@@ -50,7 +50,7 @@ a{color:inherit;}
 
 .status-title{font-family:var(--display);font-weight:700;font-size:clamp(1.35rem,4vw,1.9rem);letter-spacing:-.02em;margin-top:14px;line-height:1.12;}
 .status-sub{font-size:15px;color:var(--ink-soft);margin-top:7px;line-height:1.5;}
-.esp-note{font-size:14.5px;color:var(--ink-soft);margin-top:10px;}
+.esp-note{font-size:14.5px;color:var(--ink-soft);margin-top:18px;}
 .esp-note b{color:var(--ink);font-weight:600;}
 
 .legend{margin-top:22px;display:flex;flex-wrap:wrap;justify-content:center;align-items:baseline;gap:7px;font-size:15.5px;color:var(--ink-soft);}

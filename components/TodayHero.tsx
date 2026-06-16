@@ -83,40 +83,19 @@ export default function TodayHero() {
             ) : "\u00a0"}
           </div>
 
-          {data && (
+          {data?.todayHol && (
             <div className="status">
-              {data.todayHol ? (
-                <>
-                  <span className="badge"><span className="pulse" />Hoy es festivo</span>
-                  <h2 className="status-title">{data.todayHol.name}</h2>
-                  <p className="status-sub">{data.todayHol.why}</p>
-                  {data.todayHol.wasMoved && (
-                    <p className="status-sub">Trasladado a este lunes por la Ley Emiliani.</p>
-                  )}
-                </>
-              ) : (
-                <>
-                  <span className="badge"><span className="pulse" />Día laborable</span>
-                  <h2 className="status-title">Hoy no es festivo</h2>
-                  {data.todayEsp && (
-                    <p className="esp-note">Hoy se celebra: <b>{data.todayEsp.name}</b></p>
-                  )}
-                </>
+              <span className="badge"><span className="pulse" />Hoy es festivo</span>
+              <h2 className="status-title">{data.todayHol.name}</h2>
+              <p className="status-sub">{data.todayHol.why}</p>
+              {data.todayHol.wasMoved && (
+                <p className="status-sub">Trasladado a este lunes por la Ley Emiliani.</p>
               )}
             </div>
           )}
 
-          {data && !data.todayHol && (
-            <div className="legend">
-              <span>
-                El próximo festivo será el{" "}
-                <span className="hl">
-                  {DOW[data.next.date.getDay()]} {data.next.date.getDate()} de {MONTHS[data.next.date.getMonth()]}
-                  {data.next.date.getFullYear() !== data.year ? ` de ${data.next.date.getFullYear()}` : ""}
-                </span>{" "}
-                · {data.next.name}
-              </span>
-            </div>
+          {data && !data.todayHol && data.todayEsp && (
+            <p className="esp-note">Hoy se celebra: <b>{data.todayEsp.name}</b></p>
           )}
 
           <button className="cta" onClick={() => setCalOpen(true)}>

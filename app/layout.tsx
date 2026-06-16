@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import FooterYearLinks from "@/components/FooterYearLinks";
+import ThemeToggle from "@/components/ThemeToggle";
 import { yearWindow } from "@/lib/holidays";
+
+const themeScript = `(function(){try{var s=localStorage.getItem("theme");var t=s||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.dataset.theme=t;}catch(e){}})();`;
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://festivoscolombia.link";
 
@@ -29,12 +32,16 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const years = yearWindow();
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
       <body>
         <header className="topbar">
           <a className="brand" href="/">
             Festivos <b>Colombia</b>
           </a>
+          <ThemeToggle />
         </header>
         {children}
         <footer className="site-footer">

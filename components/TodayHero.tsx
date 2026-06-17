@@ -116,17 +116,14 @@ export default function TodayHero() {
                 <div className="countdown-units live-clock-units">
                   <div className="countdown-unit">
                     <span>{clock.hours}</span>
-                    <small>hrs</small>
                   </div>
                   <span className="countdown-sep" aria-hidden="true">:</span>
                   <div className="countdown-unit">
                     <span>{clock.minutes}</span>
-                    <small>min</small>
                   </div>
                   <span className="countdown-sep" aria-hidden="true">:</span>
                   <div className="countdown-unit">
                     <span>{clock.seconds}</span>
-                    <small>seg</small>
                   </div>
                   <div className="countdown-unit live-clock-ampm">
                     <span>{clock.period}</span>

@@ -94,26 +94,13 @@ a{color:inherit;}
 .live-clock{margin-top:20px;width:100%;display:flex;justify-content:center;}
 .live-clock-face{display:inline-flex;justify-content:center;align-items:center;box-sizing:border-box;min-width:min(100%,19rem);padding:14px 22px;border:1.5px solid var(--ink);border-radius:18px;background:var(--card);box-shadow:inset 0 1px 0 rgba(255,255,255,.45);}
 [data-theme="dark"] .live-clock-face{border-color:var(--line);box-shadow:inset 0 1px 0 rgba(255,255,255,.06);}
-.live-clock-units{align-items:center!important;gap:clamp(2px,1vw,6px)!important;width:auto!important;}
+.live-clock-units{align-items:center!important;gap:clamp(4px,2vw,10px)!important;width:auto!important;}
+.live-clock-units .countdown-unit{flex:0 0 auto;min-width:0;max-width:none;}
+.live-clock-units .countdown-unit span{display:inline-block;min-width:2ch;text-align:center;font-variant-numeric:tabular-nums;font-feature-settings:"tnum";}
 .live-clock-units .countdown-sep{padding-bottom:0;}
-.live-clock-ampm{font-family:var(--display);font-weight:700;font-size:clamp(1rem,4.5vw,1.35rem);letter-spacing:.06em;color:var(--ink);min-width:2.4ch;text-align:center;margin-left:clamp(2px,1vw,6px);}
-.is-festivo .live-clock-ampm,.is-festivo .flip-digit{color:var(--red);}
-.flip-digit{display:inline-block;color:var(--ink);font-family:var(--display);font-weight:700;font-size:clamp(2rem,10vw,2.75rem);letter-spacing:-.03em;line-height:1;vertical-align:bottom;}
-.flip-digit-stack{position:relative;display:block;width:.62em;height:1em;perspective:240px;transform-style:preserve-3d;}
-.flip-digit-half{position:absolute;left:0;right:0;height:50%;overflow:hidden;}
-.flip-digit-top{top:0;}
-.flip-digit-bottom{bottom:0;}
-.flip-digit-half>span{display:block;height:200%;line-height:1em;text-align:center;font-variant-numeric:tabular-nums;}
-.flip-digit-bottom>span{margin-top:-.5em;}
-.flip-digit-hinge{position:absolute;top:50%;left:-8%;right:-8%;height:1px;background:color-mix(in srgb,var(--ink) 22%,transparent);transform:translateY(-50%);pointer-events:none;z-index:4;}
-.flip-digit-leaf{backface-visibility:hidden;z-index:3;}
-.flip-digit-leaf.flip-digit-top{transform-origin:50% 100%;animation:flipTopOut .42s ease-in forwards;}
-.flip-digit-leaf-in{transform-origin:50% 0;transform:rotateX(90deg);animation:flipBottomIn .42s ease-out forwards;}
-@keyframes flipTopOut{from{transform:rotateX(0deg);}to{transform:rotateX(-90deg);}}
-@keyframes flipBottomIn{from{transform:rotateX(90deg);}to{transform:rotateX(0deg);}}
-@media(prefers-reduced-motion:reduce){
-  .flip-digit-leaf{animation:none!important;opacity:0;}
-}
+.live-clock-ampm{align-self:flex-end;}
+.live-clock-ampm span{font-size:clamp(1rem,4.5vw,1.35rem)!important;letter-spacing:.06em;min-width:2.4ch;}
+.is-festivo .live-clock-units .countdown-unit span{color:var(--red);}
 
 .status{margin:26px auto 0;max-width:540px;}
 .badge{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;padding:7px 13px;border-radius:999px;border:1px solid var(--line);color:var(--ink-soft);background:var(--card);}
@@ -287,8 +274,8 @@ html.modal-open,html.modal-open body{overflow:hidden;overscroll-behavior:none;}
   .countdown-sep{font-size:1.35rem;padding-bottom:18px;}
   .live-clock{margin-top:16px;}
   .live-clock-face{min-width:14.5rem;padding:10px 16px;}
-  .flip-digit{font-size:1.65rem;}
-  .live-clock-ampm{font-size:1.1rem;}
+  .live-clock-units .countdown-unit span{font-size:1.65rem;}
+  .live-clock-ampm span{font-size:1.1rem!important;}
   .months{grid-template-columns:repeat(3,1fr);gap:34px 30px;}
 }
 @media(min-width:1300px){.months{grid-template-columns:repeat(4,1fr);}}

@@ -5,9 +5,9 @@ import {
   getHolidays, getSpecials, dateKey, todayInBogota, holidayStartBogotaMs, DOW, MONTHS,
 } from "@/lib/holidays";
 import CalendarModal from "./CalendarModal";
-import FlipClock, { type ClockTime } from "./FlipClock";
 
 type Countdown = { days: number; hours: number; minutes: number; seconds: number };
+type ClockTime = { hours: string; minutes: string; seconds: string; period: string };
 
 function clockInBogota(now = new Date()): ClockTime {
   const parts = Object.fromEntries(
@@ -112,8 +112,27 @@ export default function TodayHero() {
 
           {clock && (
             <div className="live-clock">
-              <div className="live-clock-face">
-                <FlipClock time={clock} isFestivo={isFestivo} />
+              <div
+                className="live-clock-face"
+                aria-live="polite"
+                aria-label={`Hora en Colombia: ${clock.hours}:${clock.minutes}:${clock.seconds} ${clock.period}`}
+              >
+                <div className="countdown-units live-clock-units">
+                  <div className="countdown-unit">
+                    <span>{clock.hours}</span>
+                  </div>
+                  <span className="countdown-sep" aria-hidden="true">:</span>
+                  <div className="countdown-unit">
+                    <span>{clock.minutes}</span>
+                  </div>
+                  <span className="countdown-sep" aria-hidden="true">:</span>
+                  <div className="countdown-unit">
+                    <span>{clock.seconds}</span>
+                  </div>
+                  <div className="countdown-unit live-clock-ampm">
+                    <span>{clock.period}</span>
+                  </div>
+                </div>
               </div>
             </div>
           )}

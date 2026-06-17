@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ThemeAnimationType, useModeAnimation } from "react-theme-switch-animation";
 
 function getTheme(): "light" | "dark" {
   if (typeof document === "undefined") return "light";
@@ -11,27 +12,36 @@ export default function ThemeToggle() {
   const [isDark, setIsDark] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
 
+  const { ref, toggleSwitchTheme, isDarkMode } = useModeAnimation({
+    animationType: ThemeAnimationType.CIRCLE,
+    duration: 650,
+    globalClassName: "",
+    isDarkMode: isDark,
+    onDarkModeChange: (dark) => {
+      setIsDark(dark);
+      document.documentElement.dataset.theme = dark ? "dark" : "light";
+    },
+  });
+
   useEffect(() => {
     setIsDark(getTheme() === "dark");
   }, []);
 
-  const toggle = () => {
-    const next = isDark ? "light" : "dark";
-    setIsDark(!isDark);
-    document.documentElement.dataset.theme = next;
-    localStorage.setItem("theme", next);
+  const toggle = async () => {
     setIsAnimating(true);
     window.setTimeout(() => setIsAnimating(false), 550);
+    await toggleSwitchTheme();
   };
 
   return (
     <button
+      ref={ref}
       type="button"
       className={`theme-toggle${isAnimating ? " is-animating" : ""}`}
-      data-dark={isDark ? "true" : "false"}
+      data-dark={isDarkMode ? "true" : "false"}
       onClick={toggle}
-      aria-label={isDark ? "Activar modo claro" : "Activar modo oscuro"}
-      aria-pressed={isDark}
+      aria-label={isDarkMode ? "Activar modo claro" : "Activar modo oscuro"}
+      aria-pressed={isDarkMode}
     >
       <span className="theme-toggle-icons" aria-hidden="true">
         <svg className="theme-icon theme-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none">

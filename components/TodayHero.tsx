@@ -1,13 +1,29 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   getHolidays, getSpecials, dateKey, todayInBogota, holidayStartBogotaMs, DOW, MONTHS,
 } from "@/lib/holidays";
+import { gsap } from "@/lib/gsap";
 import CalendarModal from "./CalendarModal";
 
 type Countdown = { days: number; hours: number; minutes: number; seconds: number };
 type ClockTime = { hours: string; minutes: string; seconds: string; period: string };
+
+const REVEAL_FROM = {
+  opacity: 0,
+  y: 24,
+  filter: "blur(10px)",
+  clipPath: "inset(0 0 100% 0)",
+};
+
+const REVEAL_TO = {
+  opacity: 1,
+  y: 0,
+  filter: "blur(0px)",
+  clipPath: "inset(0 0 0% 0)",
+  ease: "expo.out" as const,
+};
 
 function clockInBogota(now = new Date()): ClockTime {
   const parts = Object.fromEntries(
@@ -46,6 +62,7 @@ export default function TodayHero() {
   const [calOpen, setCalOpen] = useState(false);
   const [countdown, setCountdown] = useState<Countdown | null>(null);
   const [clock, setClock] = useState<ClockTime | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => { setToday(todayInBogota()); }, []);
 
@@ -91,8 +108,52 @@ export default function TodayHero() {
   const calYear = today ? today.getFullYear() : new Date().getFullYear();
   const isFestivo = !!data?.todayHol;
 
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+    if (!section || !today) return;
+
+    const ctx = gsap.context(() => {
+      const mm = gsap.matchMedia();
+
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        const eyebrow = section.querySelector(".eyebrow");
+        const dayNumber = section.querySelector(".day-number");
+        const monthLine = section.querySelector(".month-line");
+        const liveClock = section.querySelector(".live-clock");
+        const status = section.querySelector(".status, .esp-note");
+        const cta = section.querySelector(".cta");
+        const upcoming = section.querySelector(".upcoming");
+        const uprows = section.querySelectorAll(".uprow");
+
+        const introTargets = [eyebrow, monthLine, liveClock, status, cta, upcoming].filter(Boolean);
+        gsap.set(introTargets, REVEAL_FROM);
+        if (dayNumber) {
+          gsap.set(dayNumber, {
+            opacity: 0,
+            y: 36,
+            filter: "blur(14px)",
+            clipPath: "inset(0 0 100% 0)",
+          });
+        }
+        if (uprows.length) gsap.set(uprows, REVEAL_FROM);
+
+        const tl = gsap.timeline();
+        tl.to(eyebrow, { ...REVEAL_TO, duration: 0.7 })
+          .to(dayNumber, { ...REVEAL_TO, duration: 0.95 }, "-=0.55")
+          .to(monthLine, { ...REVEAL_TO, duration: 0.75 }, "-=0.65")
+          .to(liveClock, { ...REVEAL_TO, duration: 0.75 }, "-=0.6")
+          .to(status, { ...REVEAL_TO, duration: 0.7 }, "-=0.55")
+          .to(cta, { ...REVEAL_TO, duration: 0.7 }, "-=0.5")
+          .to(upcoming, { ...REVEAL_TO, duration: 0.75 }, "-=0.45")
+          .to(uprows, { ...REVEAL_TO, duration: 0.65, stagger: 0.08 }, "-=0.55");
+      });
+    }, section);
+
+    return () => ctx.revert();
+  }, [today]);
+
   return (
-    <section className="hero-section">
+    <section className="hero-section" ref={sectionRef}>
       <div className={`hero${isFestivo ? " is-festivo" : ""}`}>
         <div className="hero-date">
           <div className="eyebrow">

@@ -6,6 +6,7 @@ import {
   getHolidays, getSpecials, getBands, inBand, dateKey, isSameDay,
   todayInBogota, DOW, DOW_SHORT, MONTHS,
 } from "@/lib/holidays";
+import { gsap } from "@/lib/gsap";
 
 type TipData = {
   cellId: string;
@@ -27,6 +28,24 @@ type PopoverPos = {
 function DatePopover({ tip, onClose }: { tip: TipData; onClose: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<PopoverPos | null>(null);
+
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const ctx = gsap.context(() => {
+      const mm = gsap.matchMedia();
+      mm.add("(prefers-reduced-motion: no-preference)", () => {
+        gsap.fromTo(
+          el,
+          { opacity: 0, scale: 0.92, y: 8 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.35, ease: "power3.out" },
+        );
+      });
+    }, el);
+
+    return () => ctx.revert();
+  }, [tip.cellId]);
 
   useLayoutEffect(() => {
     const el = ref.current;
@@ -94,14 +113,16 @@ export default function CalendarModal({
 }: { initialYear: number; open: boolean; onClose: () => void }) {
   const [viewYear, setViewYear] = useState(initialYear);
   const [tip, setTip] = useState<TipData | null>(null);
+  const [rendered, setRendered] = useState(false);
   const overlayRef = useRef<HTMLDivElement>(null);
   const openedOnceRef = useRef(false);
 
+  useEffect(() => { if (open) setRendered(true); }, [open]);
   useEffect(() => { if (open) setViewYear(initialYear); }, [open, initialYear]);
   useEffect(() => { if (!open) setTip(null); }, [open]);
 
   useEffect(() => {
-    if (!open) return;
+    if (!rendered) return;
     const scrollY = window.scrollY;
     const { documentElement: html, body } = document;
 
@@ -132,7 +153,7 @@ export default function CalendarModal({
       window.scrollTo(0, scrollY);
       window.removeEventListener("keydown", onKey);
     };
-  }, [open, onClose, tip]);
+  }, [rendered, onClose, tip]);
 
   useEffect(() => {
     if (!tip) return;
@@ -159,7 +180,70 @@ export default function CalendarModal({
   const today = useMemo(() => todayInBogota(), []);
 
   useLayoutEffect(() => {
+    if (!rendered) return;
+    const overlay = overlayRef.current;
+    if (!overlay) return;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     if (!open) {
+      if (reduceMotion) {
+        setRendered(false);
+        return;
+      }
+
+      const tween = gsap.to(overlay, {
+        opacity: 0,
+        scale: 0.985,
+        y: 8,
+        duration: 0.3,
+        ease: "power2.in",
+        onComplete: () => setRendered(false),
+      });
+
+      return () => { tween.kill(); };
+    }
+
+    if (reduceMotion) return;
+
+    gsap.fromTo(
+      overlay,
+      { opacity: 0, scale: 0.985, y: 12 },
+      { opacity: 1, scale: 1, y: 0, duration: 0.55, ease: "expo.out" },
+    );
+  }, [open, rendered]);
+
+  useLayoutEffect(() => {
+    if (!open || !rendered) return;
+    const overlay = overlayRef.current;
+    if (!overlay) return;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) return;
+
+    const ctx = gsap.context(() => {
+      const months = overlay.querySelectorAll(".month");
+      gsap.fromTo(
+        months,
+        { opacity: 0, y: 24, filter: "blur(8px)", clipPath: "inset(0 0 100% 0)" },
+        {
+          opacity: 1,
+          y: 0,
+          filter: "blur(0px)",
+          clipPath: "inset(0 0 0% 0)",
+          duration: 0.5,
+          ease: "expo.out",
+          stagger: 0.04,
+          delay: 0.12,
+        },
+      );
+    }, overlay);
+
+    return () => ctx.revert();
+  }, [open, viewYear, rendered]);
+
+  useLayoutEffect(() => {
+    if (!open || !rendered) {
       openedOnceRef.current = false;
       return;
     }
@@ -195,7 +279,7 @@ export default function CalendarModal({
       requestAnimationFrame(scrollToMonth);
     }, delay);
     return () => window.clearTimeout(id);
-  }, [open, viewYear, today]);
+  }, [open, viewYear, today, rendered]);
 
   const openTip = (cellId: string, el: HTMLElement, title: string, body: string, meta: string) => {
     if (tip?.cellId === cellId) {
@@ -214,7 +298,7 @@ export default function CalendarModal({
     });
   };
 
-  if (!open) return null;
+  if (!rendered) return null;
 
   return createPortal(
     <div className="overlay" ref={overlayRef} role="dialog" aria-modal="true" aria-label={`Calendario ${viewYear}`}>

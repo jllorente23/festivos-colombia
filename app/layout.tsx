@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import FooterYearLinks from "@/components/FooterYearLinks";
+import MotionProvider from "@/components/MotionProvider";
 import ThemeToggle from "@/components/ThemeToggle";
 import { yearWindow } from "@/lib/holidays";
 
@@ -43,7 +44,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </a>
           <ThemeToggle />
         </header>
-        {children}
+        <MotionProvider>{children}</MotionProvider>
         <footer className="site-footer">
           <div className="inner">
             <h4>Festivos por año</h4>

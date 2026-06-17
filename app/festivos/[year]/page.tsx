@@ -37,11 +37,11 @@ export default function YearPage({ params }: { params: { year: string } }) {
 
   return (
     <main className="page">
-      <p className="eyebrow-link">
+      <p className="eyebrow-link" data-reveal>
         <a href="/" className="back-today">← Llévame al día de hoy</a>
       </p>
-      <h1 className="title">Festivos en Colombia {y}</h1>
-      <p className="lead">
+      <h1 className="title" data-reveal>Festivos en Colombia {y}</h1>
+      <p className="lead" data-reveal>
         En {y}, Colombia tiene <b>{hs.length} días festivos</b> de carácter nacional. El primero
         es {first.name}, el {first.date.getDate()} de {MONTHS[first.date.getMonth()]}. Entre los
         más cercanos al inicio del año están: {sample}. La mayoría se traslada al lunes por la
@@ -52,7 +52,7 @@ export default function YearPage({ params }: { params: { year: string } }) {
       <HolidayTable year={y} />
       <YearNav year={y} />
 
-      <p className="muted">
+      <p className="muted" data-reveal>
         Fechas calculadas con la Ley 51 de 1983 (Ley Emiliani) y la Ley 2578 de 2026 (Día de la
         Virgen del Rosario de Chiquinquirá). Los festivos de Semana Santa dependen de la fecha de
         Pascua de cada año.

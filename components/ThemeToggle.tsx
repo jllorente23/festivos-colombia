@@ -34,6 +34,14 @@ export default function ThemeToggle() {
       aria-pressed={isDark}
     >
       <span className="theme-toggle-icons" aria-hidden="true">
+        <svg className="theme-icon theme-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M21 14.5A8.5 8.5 0 0 1 9.5 3 7 7 0 1 0 21 14.5Z"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinejoin="round"
+          />
+        </svg>
         <svg className="theme-icon theme-icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none">
           <circle cx="12" cy="12" r="4" stroke="currentColor" strokeWidth="2" />
           <path
@@ -41,14 +49,6 @@ export default function ThemeToggle() {
             stroke="currentColor"
             strokeWidth="2"
             strokeLinecap="round"
-          />
-        </svg>
-        <svg className="theme-icon theme-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none">
-          <path
-            d="M21 14.5A8.5 8.5 0 0 1 9.5 3 7 7 0 1 0 21 14.5Z"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinejoin="round"
           />
         </svg>
       </span>

@@ -11,7 +11,8 @@
     "@vercel/analytics": "^2.0.1",
     "next": "14.2.35",
     "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react-dom": "18.3.1",
+    "react-split-flap": "^0.1.7"
   },
   "devDependencies": {
     "@types/node": "20.14.10",

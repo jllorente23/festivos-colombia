@@ -1,47 +1,96 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { ThemeAnimationType, useModeAnimation } from "react-theme-switch-animation";
+import { useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 
 function getTheme(): "light" | "dark" {
   if (typeof document === "undefined") return "light";
   return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
 }
 
+function applyTheme(dark: boolean) {
+  document.documentElement.dataset.theme = dark ? "dark" : "light";
+  localStorage.setItem("theme", dark ? "dark" : "light");
+}
+
+type ViewTransitionDocument = Document & {
+  startViewTransition?: (update: () => void) => { ready: Promise<void> };
+};
+
+async function toggleThemeWithAnimation(
+  button: HTMLButtonElement,
+  setDark: (dark: boolean) => void,
+  isDark: boolean,
+) {
+  const next = !isDark;
+  const doc = document as ViewTransitionDocument;
+
+  if (
+    !doc.startViewTransition
+    || window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    setDark(next);
+    applyTheme(next);
+    return;
+  }
+
+  const { top, left, width, height } = button.getBoundingClientRect();
+  const x = left + width / 2;
+  const y = top + height / 2;
+  const maxRadius = Math.hypot(
+    Math.max(x, window.innerWidth - x),
+    Math.max(y, window.innerHeight - y),
+  );
+
+  const transition = doc.startViewTransition(() => {
+    flushSync(() => {
+      setDark(next);
+      applyTheme(next);
+    });
+  });
+
+  await transition.ready;
+
+  document.documentElement.animate(
+    {
+      clipPath: [
+        `circle(0px at ${x}px ${y}px)`,
+        `circle(${maxRadius}px at ${x}px ${y}px)`,
+      ],
+    },
+    {
+      duration: 650,
+      easing: "ease-in-out",
+      pseudoElement: "::view-transition-new(root)",
+    },
+  );
+}
+
 export default function ThemeToggle() {
   const [isDark, setIsDark] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
-
-  const { ref, toggleSwitchTheme, isDarkMode } = useModeAnimation({
-    animationType: ThemeAnimationType.CIRCLE,
-    duration: 650,
-    globalClassName: "",
-    isDarkMode: isDark,
-    onDarkModeChange: (dark) => {
-      setIsDark(dark);
-      document.documentElement.dataset.theme = dark ? "dark" : "light";
-    },
-  });
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     setIsDark(getTheme() === "dark");
   }, []);
 
   const toggle = async () => {
+    if (!buttonRef.current) return;
     setIsAnimating(true);
     window.setTimeout(() => setIsAnimating(false), 550);
-    await toggleSwitchTheme();
+    await toggleThemeWithAnimation(buttonRef.current, setIsDark, isDark);
   };
 
   return (
     <button
-      ref={ref}
+      ref={buttonRef}
       type="button"
       className={`theme-toggle${isAnimating ? " is-animating" : ""}`}
-      data-dark={isDarkMode ? "true" : "false"}
+      data-dark={isDark ? "true" : "false"}
       onClick={toggle}
-      aria-label={isDarkMode ? "Activar modo claro" : "Activar modo oscuro"}
-      aria-pressed={isDarkMode}
+      aria-label={isDark ? "Activar modo claro" : "Activar modo oscuro"}
+      aria-pressed={isDark}
     >
       <span className="theme-toggle-icons" aria-hidden="true">
         <svg className="theme-icon theme-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none">

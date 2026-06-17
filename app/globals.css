@@ -27,6 +27,7 @@
 
 *{box-sizing:border-box;margin:0;padding:0;}
 html,body{background:var(--paper);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;}
+::view-transition-old(root),::view-transition-new(root){animation:none;mix-blend-mode:normal;}
 body{min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;}
 a{color:inherit;}
 

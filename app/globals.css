@@ -89,6 +89,14 @@ a{color:inherit;}
 .month-line{font-family:var(--display);font-weight:500;font-size:clamp(1.4rem,5vw,2.4rem);letter-spacing:-.02em;margin-top:6px;}
 .month-line .yr{color:var(--ink-soft);}
 
+.live-clock{margin-top:20px;width:100%;display:flex;justify-content:center;}
+.live-clock-face{display:inline-flex;padding:16px 22px 18px;border:1.5px solid var(--line);border-radius:18px;background:var(--card);box-shadow:inset 0 1px 0 rgba(255,255,255,.45);}
+[data-theme="dark"] .live-clock-face{box-shadow:inset 0 1px 0 rgba(255,255,255,.06);}
+.live-clock-units{gap:clamp(4px,2vw,10px)!important;}
+.live-clock-ampm{align-self:flex-end;padding-bottom:22px;}
+.live-clock-ampm span{font-size:clamp(1rem,4.5vw,1.35rem)!important;letter-spacing:.06em;}
+.is-festivo .live-clock-units .countdown-unit span{color:var(--red);}
+
 .status{margin:26px auto 0;max-width:540px;}
 .badge{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;padding:7px 13px;border-radius:999px;border:1px solid var(--line);color:var(--ink-soft);background:var(--card);}
 .is-festivo .badge{background:var(--red-soft);border-color:#F3C9C6;color:var(--red);}
@@ -259,6 +267,13 @@ html.modal-open,html.modal-open body{overflow:hidden;overscroll-behavior:none;}
   .countdown-unit span{font-size:1.65rem;}
   .countdown-unit small{font-size:9.5px;margin-top:5px;}
   .countdown-sep{font-size:1.35rem;padding-bottom:18px;}
+  .live-clock{margin-top:16px;}
+  .live-clock-face{padding:12px 16px 14px;}
+  .live-clock-units{gap:4px!important;}
+  .live-clock-units .countdown-unit span{font-size:1.65rem;}
+  .live-clock-units .countdown-unit small{font-size:9.5px;margin-top:5px;}
+  .live-clock-ampm{padding-bottom:18px;}
+  .live-clock-ampm span{font-size:1.1rem!important;}
   .months{grid-template-columns:repeat(3,1fr);gap:34px 30px;}
 }
 @media(min-width:1300px){.months{grid-template-columns:repeat(4,1fr);}}

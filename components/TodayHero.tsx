@@ -7,6 +7,25 @@ import {
 import CalendarModal from "./CalendarModal";
 
 type Countdown = { days: number; hours: number; minutes: number; seconds: number };
+type ClockTime = { hours: string; minutes: string; seconds: string; period: string };
+
+function clockInBogota(now = new Date()): ClockTime {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat("en-US", {
+      timeZone: "America/Bogota",
+      hour: "numeric",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    }).formatToParts(now).map((p) => [p.type, p.value]),
+  );
+  return {
+    hours: parts.hour.padStart(2, "0"),
+    minutes: parts.minute,
+    seconds: parts.second,
+    period: parts.dayPeriod.toUpperCase(),
+  };
+}
 
 function splitCountdown(ms: number): Countdown {
   const total = Math.max(0, ms);
@@ -26,8 +45,16 @@ export default function TodayHero() {
   const [today, setToday] = useState<Date | null>(null);
   const [calOpen, setCalOpen] = useState(false);
   const [countdown, setCountdown] = useState<Countdown | null>(null);
+  const [clock, setClock] = useState<ClockTime | null>(null);
 
   useEffect(() => { setToday(todayInBogota()); }, []);
+
+  useEffect(() => {
+    const tick = () => setClock(clockInBogota());
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
 
   const data = useMemo(() => {
     if (!today) return null;
@@ -82,6 +109,32 @@ export default function TodayHero() {
               <>de {MONTHS[today.getMonth()]} <span className="yr">{today.getFullYear()}</span></>
             ) : "\u00a0"}
           </div>
+
+          {clock && (
+            <div className="live-clock">
+              <div className="live-clock-face" aria-live="polite" aria-label={`Hora en Colombia: ${clock.hours}:${clock.minutes}:${clock.seconds} ${clock.period}`}>
+                <div className="countdown-units live-clock-units">
+                  <div className="countdown-unit">
+                    <span>{clock.hours}</span>
+                    <small>hrs</small>
+                  </div>
+                  <span className="countdown-sep" aria-hidden="true">:</span>
+                  <div className="countdown-unit">
+                    <span>{clock.minutes}</span>
+                    <small>min</small>
+                  </div>
+                  <span className="countdown-sep" aria-hidden="true">:</span>
+                  <div className="countdown-unit">
+                    <span>{clock.seconds}</span>
+                    <small>seg</small>
+                  </div>
+                  <div className="countdown-unit live-clock-ampm">
+                    <span>{clock.period}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {data?.todayHol && (
             <div className="status">

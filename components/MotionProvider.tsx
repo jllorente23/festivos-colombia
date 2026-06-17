@@ -39,32 +39,19 @@ export default function MotionProvider({ children }: { children: React.ReactNode
 
         ScrollTrigger.batch(REVEAL_SELECTOR, {
           start: "top 92%",
+          once: true,
           onEnter: (batch) => {
             gsap.to(batch, {
               ...REVEAL_TO,
               stagger: 0.08,
               overwrite: true,
             });
-          },
-          onEnterBack: (batch) => {
-            gsap.to(batch, {
-              ...REVEAL_TO,
-              stagger: 0.08,
-              overwrite: true,
-            });
-          },
-          onLeave: (batch) => {
-            gsap.killTweensOf(batch);
-            gsap.set(batch, REVEAL_FROM);
-          },
-          onLeaveBack: (batch) => {
-            gsap.killTweensOf(batch);
-            gsap.set(batch, REVEAL_FROM);
           },
         });
 
         ScrollTrigger.batch(".holiday-table-body .holiday-table-row.is-today", {
           start: "top 88%",
+          once: true,
           onEnter: (batch) => {
             gsap.fromTo(
               batch,
@@ -77,27 +64,6 @@ export default function MotionProvider({ children }: { children: React.ReactNode
                 overwrite: true,
               },
             );
-          },
-          onEnterBack: (batch) => {
-            gsap.fromTo(
-              batch,
-              { scale: 0.98 },
-              {
-                scale: 1,
-                duration: 0.6,
-                ease: "expo.out",
-                stagger: 0.04,
-                overwrite: true,
-              },
-            );
-          },
-          onLeave: (batch) => {
-            gsap.killTweensOf(batch);
-            gsap.set(batch, { scale: 0.98 });
-          },
-          onLeaveBack: (batch) => {
-            gsap.killTweensOf(batch);
-            gsap.set(batch, { scale: 0.98 });
           },
         });
       });

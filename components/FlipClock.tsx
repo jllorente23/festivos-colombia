@@ -1,77 +1,77 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { SplitFlap, Presets } from "react-split-flap";
 
 export type ClockTime = { hours: string; minutes: string; seconds: string; period: string };
 
-const PERIOD_CHARS = ["AM", "PM"];
-
-function useSiteTheme(): "light" | "dark" {
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+function FlipDigit({ value }: { value: string }) {
+  const [shown, setShown] = useState(value);
+  const [prev, setPrev] = useState(value);
+  const [flipping, setFlipping] = useState(false);
 
   useEffect(() => {
-    const read = () => {
-      setTheme(document.documentElement.dataset.theme === "dark" ? "dark" : "light");
-    };
-    read();
-    const obs = new MutationObserver(read);
-    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
-    return () => obs.disconnect();
-  }, []);
+    if (value === shown) return;
+    setPrev(shown);
+    setFlipping(true);
+    const id = window.setTimeout(() => {
+      setShown(value);
+      setFlipping(false);
+    }, 420);
+    return () => window.clearTimeout(id);
+  }, [value, shown]);
 
-  return theme;
+  return (
+    <span className={`flip-digit${flipping ? " is-flipping" : ""}`} aria-hidden="true">
+      <span className="flip-digit-stack">
+        <span className="flip-digit-half flip-digit-top">
+          <span>{shown}</span>
+        </span>
+        <span className="flip-digit-half flip-digit-bottom">
+          <span>{shown}</span>
+        </span>
+        {flipping && (
+          <>
+            <span className="flip-digit-half flip-digit-top flip-digit-leaf">
+              <span>{prev}</span>
+            </span>
+            <span className="flip-digit-half flip-digit-bottom flip-digit-leaf flip-digit-leaf-in">
+              <span>{value}</span>
+            </span>
+          </>
+        )}
+        <span className="flip-digit-hinge" />
+      </span>
+    </span>
+  );
+}
+
+function FlipPair({ value }: { value: string }) {
+  return (
+    <>
+      <FlipDigit value={value[0] ?? "0"} />
+      <FlipDigit value={value[1] ?? "0"} />
+    </>
+  );
 }
 
 export default function FlipClock({
   time,
-  isFestivo = false,
 }: {
   time: ClockTime;
   isFestivo?: boolean;
 }) {
-  const theme = useSiteTheme();
-  const flapTheme = theme === "dark" ? "dark" : "light";
-  const fontColor = isFestivo ? "var(--red)" : "var(--ink)";
-  const background = theme === "dark"
-    ? "linear-gradient(184deg, #2A1E12 0%, #1F150C 25%)"
-    : "linear-gradient(145deg, #FFF8EE 0%, #FFE5BF 100%)";
-
-  const flapProps = {
-    chars: Presets.NUM,
-    length: 2 as const,
-    timing: 32,
-    hinge: true,
-    theme: flapTheme as "light" | "dark",
-    size: "large" as const,
-    fontColor,
-    background,
-    padMode: "start" as const,
-    padChar: "0",
-  };
-
   return (
     <div
-      className="flip-clock"
+      className="countdown-units live-clock-units"
       aria-live="polite"
       aria-label={`Hora en Colombia: ${time.hours}:${time.minutes}:${time.seconds} ${time.period}`}
     >
-      <SplitFlap value={time.hours} {...flapProps} />
-      <span className="flip-clock-sep" aria-hidden="true">:</span>
-      <SplitFlap value={time.minutes} {...flapProps} />
-      <span className="flip-clock-sep" aria-hidden="true">:</span>
-      <SplitFlap value={time.seconds} {...flapProps} />
-      <SplitFlap
-        value={time.period}
-        chars={PERIOD_CHARS}
-        length={1}
-        timing={48}
-        hinge
-        theme={flapTheme}
-        size="large"
-        fontColor={fontColor}
-        background={background}
-      />
+      <FlipPair value={time.hours} />
+      <span className="countdown-sep" aria-hidden="true">:</span>
+      <FlipPair value={time.minutes} />
+      <span className="countdown-sep" aria-hidden="true">:</span>
+      <FlipPair value={time.seconds} />
+      <span className="live-clock-ampm">{time.period}</span>
     </div>
   );
 }

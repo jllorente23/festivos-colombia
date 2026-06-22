@@ -81,7 +81,24 @@ a{color:inherit;}
 }
 
 /* Hero centrado */
-.hero-section{min-height:calc(100vh - 58px);display:flex;align-items:center;justify-content:center;padding:46px 22px;}
+.hero-section{position:relative;min-height:calc(100vh - 58px);display:flex;align-items:center;justify-content:center;padding:46px 22px;}
+.scroll-hint{display:none;}
+@media(min-width:900px){
+  .scroll-hint{
+    display:flex;align-items:center;justify-content:center;
+    position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+    width:40px;height:40px;border:none;border-radius:999px;
+    background:transparent;color:var(--ink-soft);cursor:pointer;
+    opacity:.55;transition:opacity .4s ease,visibility .4s ease,color .25s ease;
+    animation:scrollHintBounce 2.2s ease-in-out infinite;
+  }
+  .scroll-hint:hover{color:var(--ink);opacity:.85;}
+  .scroll-hint.is-hidden{opacity:0;visibility:hidden;pointer-events:none;animation:none;}
+}
+@keyframes scrollHintBounce{
+  0%,100%{transform:translateX(-50%) translateY(0);}
+  50%{transform:translateX(-50%) translateY(7px);}
+}
 .hero{width:100%;max-width:760px;margin:0 auto;text-align:center;display:flex;flex-direction:column;align-items:center;}
 .hero-date{width:100%;display:flex;flex-direction:column;align-items:center;}
 

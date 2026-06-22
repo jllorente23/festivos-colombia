@@ -63,8 +63,18 @@ export default function TodayHero() {
   const [countdown, setCountdown] = useState<Countdown | null>(null);
   const [clock, setClock] = useState<ClockTime | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
+  const [scrollHintVisible, setScrollHintVisible] = useState(true);
 
   useEffect(() => { setToday(todayInBogota()); }, []);
+
+  useEffect(() => {
+    const onScroll = () => {
+      if (window.scrollY > 48) setScrollHintVisible(false);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     const tick = () => setClock(clockInBogota());
@@ -267,6 +277,17 @@ export default function TodayHero() {
           </div>
         )}
       </div>
+
+      <button
+        type="button"
+        className={`scroll-hint${scrollHintVisible ? "" : " is-hidden"}`}
+        aria-label="Desplázate para ver más contenido"
+        onClick={() => document.querySelector(".seo-body")?.scrollIntoView({ behavior: "smooth" })}
+      >
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true">
+          <path d="M11 4v14M5 12l6 6 6-6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </button>
 
       <CalendarModal initialYear={calYear} open={calOpen} onClose={() => setCalOpen(false)} />
     </section>

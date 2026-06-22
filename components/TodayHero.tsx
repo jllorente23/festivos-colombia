@@ -69,7 +69,7 @@ export default function TodayHero() {
 
   useEffect(() => {
     const onScroll = () => {
-      if (window.scrollY > 48) setScrollHintVisible(false);
+      setScrollHintVisible(window.scrollY <= 48);
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
